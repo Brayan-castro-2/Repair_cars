@@ -190,8 +190,8 @@ export function ClienteModal({ isOpen, onClose, onSave, cliente, defaultTab = 'd
             await crearVehiculo({
                 ...newVehicle,
                 cliente_id: cliente.id,
-                anio: newVehicle.anio || undefined,
-                motor: newVehicle.motor || undefined
+                anio: newVehicle.anio || '', // Fallback to empty string if undefined
+                motor: newVehicle.motor || '', // Fallback to empty string if undefined
             });
 
             // Update parent list

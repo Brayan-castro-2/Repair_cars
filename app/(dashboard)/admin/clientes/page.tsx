@@ -160,6 +160,7 @@ export default function ClientesPage() {
             fetchClientes();
         }, 300);
         return () => clearTimeout(timeoutId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [query]);
 
     // Calculate KPIs

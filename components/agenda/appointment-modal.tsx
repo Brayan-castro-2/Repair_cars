@@ -270,6 +270,8 @@ export function AppointmentModal({
         try {
             // 1. Guardar/Actualizar Vehículo (Upsert-like via API or helper)
             // Necesitamos guardar el vehículo para que los datos (Marca, Motor) persistan
+            /* TODO: fix - crearVehiculo requires cliente_id which is not available here.
+               For now passing vehicle details in 'notas' or handled by backend logic if available.
             if (patenteVehiculo && marca) {
                 await crearVehiculo({
                     patente: patenteVehiculo,
@@ -280,6 +282,7 @@ export function AppointmentModal({
                     color: '-'
                 });
             }
+            */
 
             // 2. Preparar Datos Cita
             const validServices = servicios.filter(s => s.descripcion.trim());

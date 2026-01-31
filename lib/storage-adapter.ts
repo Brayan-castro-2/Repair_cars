@@ -347,3 +347,11 @@ export async function subirImagenChecklist(file: File, ordenId: string, tipo: st
     console.log('🟡 [Storage] Simulando subida de imagen local...');
     return URL.createObjectURL(file);
 }
+
+export async function confirmarRevisionIngreso(orderId: string): Promise<any> {
+    if (isSupabase()) {
+        return supabaseService.confirmarRevisionIngreso(parseInt(orderId));
+    }
+    console.log('🟡 [Storage] Confirmando revisión mock:', orderId);
+    return { success: true };
+}

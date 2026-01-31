@@ -54,7 +54,7 @@ export function usePrefetchOrders() {
     return () => {
         queryClient.prefetchQuery({
             queryKey: ORDERS_QUERY_KEY,
-            queryFn: obtenerOrdenes,
+            queryFn: () => obtenerOrdenes(),
         });
     };
 }
