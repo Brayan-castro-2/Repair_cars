@@ -935,18 +935,38 @@ export async function eliminarCita(id: number): Promise<boolean> {
 
 
 // Confirmar revisión de ingreso (Mecánico)
-export async function confirmarRevisionIngreso(checklistId: number): Promise<boolean> {
+// Confirmar revisión de ingreso (Mecánico) - AHORA checklist de salida
+export async function confirmarRevisionIngreso(
+    checklistId: number | string,
+    datosSalida?: {
+        detalles_salida: any,
+        fotos_salida: any,
+        confirmado_por: string
+    }
+): Promise<boolean> {
+    const updates: any = {
+        revisado_por_mecanico_at: new Date().toISOString() // Mantener legacy por si acaso
+    };
+
+    // Si vienen datos de salida (Nuevo flujo)
+    if (datosSalida) {
+        updates.detalles_salida = datosSalida.detalles_salida;
+        updates.fotos_salida = datosSalida.fotos_salida;
+        updates.confirmado_salida_en = new Date().toISOString();
+        updates.confirmado_salida_por = datosSalida.confirmado_por;
+    }
+
     const { error } = await supabase
         .from('listas_chequeo')
-        .update({ revisado_por_mecanico_at: new Date().toISOString() })
+        .update(updates)
         .eq('id', checklistId);
 
     if (error) {
-        console.error('❌ Error al confirmar revisión:', error);
+        console.error('❌ Error al confirmar revisión/salida:', error);
         return false;
     }
 
-    console.log('✅ Revisión confirmada');
+    console.log('✅ Revisión/Salida confirmada');
     return true;
 }
 

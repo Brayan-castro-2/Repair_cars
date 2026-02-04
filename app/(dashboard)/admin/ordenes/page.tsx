@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback, Fragment, useRef } from 'react';
+import { useState, useMemo, useCallback, Fragment, useRef, useEffect } from 'react';
 import { type OrdenDB, type PerfilDB, type VehiculoDB, actualizarOrden, eliminarCita, obtenerChecklist } from '@/lib/storage-adapter';
 import { generateOrderPDF } from '@/lib/pdf-generator';
 import { useInfiniteOrders, useOrdersCount, useDeleteOrder } from '@/hooks/use-orders';
@@ -40,6 +40,13 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import ChecklistForm from '@/components/ordenes/checklist-form';
+import {
     Plus,
     Search,
     Filter,
@@ -65,9 +72,6 @@ import {
     Loader2,
     ChevronRight,
 } from 'lucide-react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import ChecklistForm from '@/components/ordenes/checklist-form';
-
 
 import Link from 'next/link';
 
@@ -118,6 +122,13 @@ export default function OrdenesPage() {
     const [checklists, setChecklists] = useState<Record<string, any>>({});
     const [loadingChecklists, setLoadingChecklists] = useState<Record<string, boolean>>({});
 
+    // Checklist Dialog State
+    const [checklistDialog, setChecklistDialog] = useState<{
+        open: boolean;
+        orderId: string | null;
+        mode: 'checklist' | 'readonly_ingreso' | 'salida';
+    }>({ open: false, orderId: null, mode: 'checklist' });
+
     const fetchChecklist = async (orderId: number, force = false) => {
         if (!force && checklists[orderId]) return;
 
@@ -135,37 +146,36 @@ export default function OrdenesPage() {
         }
     };
 
-    // Checklist Logic
-    const [checklistModalOpen, setChecklistModalOpen] = useState(false);
-    const [checklistMode, setChecklistMode] = useState<'checklist' | 'readonly_ingreso'>('checklist');
-    const [selectedChecklistOrderId, setSelectedChecklistOrderId] = useState<string | null>(null);
 
-    const handleOpenChecklist = (orderId: number, mode: 'checklist' | 'readonly_ingreso') => {
-        setSelectedChecklistOrderId(orderId.toString());
-        setChecklistMode(mode);
-        setChecklistModalOpen(true);
-        // Ensure data is fetched
+
+    const handleOpenChecklist = (orderId: number, mode: 'checklist' | 'readonly_ingreso' | 'salida') => {
+        setChecklistDialog({ open: true, orderId: orderId.toString(), mode });
         fetchChecklist(orderId);
     };
 
     const handleChecklistClose = () => {
-        setChecklistModalOpen(false);
-        // Refresh checklist data to update button state if needed
-        if (selectedChecklistOrderId) {
-            const id = parseInt(selectedChecklistOrderId);
-            // Force refresh or invalidate cache if we used react-query, but here we manually manage state.
-            // We can clear the specific checklist from state to force re-fetch next time or manually fetch now.
+        const orderId = checklistDialog.orderId;
+        setChecklistDialog({ open: false, orderId: null, mode: 'checklist' });
+        // Refresh checklist data
+        if (orderId) {
+            const id = parseInt(orderId);
             setChecklists(prev => {
                 const newState = { ...prev };
-                delete newState[id]; // Simple invalidation
+                delete newState[id];
                 return newState;
             });
             fetchChecklist(id, true);
         }
-        setSelectedChecklistOrderId(null);
     };
 
     const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
+
+    // Auto-fetch checklist when order is expanded
+    useEffect(() => {
+        if (expandedOrderId !== null) {
+            fetchChecklist(expandedOrderId);
+        }
+    }, [expandedOrderId]);
 
     const isAdmin = user?.role === 'admin';
     const canViewPrices = user?.name?.toLowerCase().includes('juan');
@@ -1105,7 +1115,7 @@ export default function OrdenesPage() {
                                                                                                 Ingreso Revisado
                                                                                             </div>
                                                                                             <Button
-                                                                                                onClick={() => handleOpenChecklist(order.id, 'checklist')}
+                                                                                                onClick={() => handleOpenChecklist(order.id, 'salida')}
                                                                                                 className="bg-emerald-600 hover:bg-emerald-500 text-white w-full sm:w-auto"
                                                                                             >
                                                                                                 ✅ Checklist Salida / Editar
@@ -1270,27 +1280,31 @@ export default function OrdenesPage() {
             </Card>
 
             {/* CHECKLIST MODAL */}
-            <Dialog open={checklistModalOpen} onOpenChange={(open) => !open && handleChecklistClose()}>
+            <Dialog open={checklistDialog.open} onOpenChange={(open) => !open && handleChecklistClose()}>
                 <DialogContent className="max-w-4xl bg-slate-950 border-slate-800 text-white p-0 overflow-hidden max-h-[90vh] flex flex-col">
                     <div className="p-6 overflow-y-auto flex-1">
                         <div className="mb-6">
                             <h2 className="text-xl font-bold text-white flex items-center gap-2">
                                 <ClipboardCheck className="w-6 h-6 text-blue-500" />
-                                {checklistMode === 'readonly_ingreso' ? 'Revisión de Ingreso' : 'Checklist de Vehículo'}
+                                {checklistDialog.mode === 'salida' ? '🚗 Checklist de Salida' :
+                                    checklistDialog.mode === 'readonly_ingreso' ? '👁️ Revisión de Ingreso' :
+                                        '📋 Checklist de Vehículo'}
                             </h2>
                             <p className="text-slate-400 text-sm">
-                                {checklistMode === 'readonly_ingreso'
-                                    ? 'Confirma el estado inicial del vehículo antes de comenzar.'
-                                    : 'Gestiona el estado del vehículo.'}
+                                {checklistDialog.mode === 'salida'
+                                    ? 'Completa el checklist de salida antes de entregar el vehículo al cliente.'
+                                    : checklistDialog.mode === 'readonly_ingreso'
+                                        ? 'Confirma el estado inicial del vehículo antes de comenzar.'
+                                        : 'Gestiona el estado del vehículo.'}
                             </p>
                         </div>
 
-                        {selectedChecklistOrderId && (
+                        {checklistDialog.orderId && (
                             <ChecklistForm
-                                orderId={selectedChecklistOrderId}
+                                orderId={checklistDialog.orderId}
                                 onClose={handleChecklistClose}
-                                initialData={checklists[parseInt(selectedChecklistOrderId)]} // Pass loaded data
-                                mode={checklistMode}
+                                initialData={checklists[parseInt(checklistDialog.orderId)]}
+                                mode={checklistDialog.mode}
                             />
                         )}
                     </div>

@@ -348,10 +348,41 @@ export async function subirImagenChecklist(file: File, ordenId: string, tipo: st
     return URL.createObjectURL(file);
 }
 
-export async function confirmarRevisionIngreso(orderId: string): Promise<any> {
-    if (isSupabase()) {
-        return supabaseService.confirmarRevisionIngreso(parseInt(orderId));
+export async function confirmarRevisionIngreso(
+    orderId: string,
+    datosSalida?: {
+        detalles_salida: any,
+        fotos_salida: any,
+        confirmado_por: string
     }
-    console.log('🟡 [Storage] Confirmando revisión mock:', orderId);
+): Promise<any> {
+    if (isSupabase()) {
+        // En supabase-service espera el ID del checklist (number), pero aquí recibimos orderId (string).
+        // Necesitamos buscar el ID del checklist primero o asumir que orderId es el checklistID (lo cual es riesgoso).
+        // V3: `obtenerChecklist` devuelve el objeto con ID.
+        // Mejor approach: `guardarChecklist` devuelve el ID.
+        // Pero `checklist-form` probablemente tenga el ID en `initialData`.
+        // Vamos a asumir que el caller pasa el ID correcto si es number, o buscamos por orden.
+
+        // Fix: Determine if we have a checklist ID (UUID) or Order ID (Number)
+        let idChecklist = orderId;
+
+        // If it looks like a number (Order ID) and NOT a UUID, verify/fetch correct checklist ID
+        // UUIDs contain hyphens. Order IDs are usually integers.
+        const isUuid = orderId.toString().includes('-');
+
+        if (!isUuid) {
+            // Assume it's an Order ID, find the checklist
+            const checklist = await supabaseService.obtenerChecklist(orderId);
+            if (checklist) {
+                idChecklist = checklist.id;
+            } else {
+                console.warn(`⚠️ No se encontró checklist para orden ${orderId}, intentando usar ID directo.`);
+            }
+        }
+
+        return supabaseService.confirmarRevisionIngreso(idChecklist, datosSalida);
+    }
+    console.log('🟡 [Storage] Confirmando revisión mock:', orderId, datosSalida);
     return { success: true };
 }

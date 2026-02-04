@@ -19,7 +19,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, CheckCircle, Download, Loader2, Printer, Save } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+} from '@/components/ui/dialog';
+import ChecklistForm from '@/components/ordenes/checklist-form';
+import { ArrowLeft, CheckCircle, Download, Loader2, Printer, Save, ClipboardCheck, Eye, CheckCircle2, FileText, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function OrdenesCleanPage() {
@@ -70,6 +78,14 @@ export default function OrdenesCleanPage() {
     const [showKm, setShowKm] = useState(false);
 
     const [checklist, setChecklist] = useState<any>(null);
+
+    const [checklistDialog, setChecklistDialog] = useState<{
+        open: boolean;
+        mode: 'checklist' | 'readonly_ingreso' | 'salida';
+    }>({
+        open: false,
+        mode: 'checklist'
+    });
 
     useEffect(() => {
         if (!Number.isFinite(orderId)) {
@@ -278,6 +294,36 @@ export default function OrdenesCleanPage() {
         setIsSaving(false);
     };
 
+    // Checklist Handlers
+    const handleOpenChecklist = (mode: 'checklist' | 'readonly_ingreso' | 'salida') => {
+        setChecklistDialog({ open: true, mode });
+    };
+
+    const handleChecklistClose = async () => {
+        setChecklistDialog({ open: false, mode: 'checklist' });
+        // Refresh checklist data
+        const checklistData = await obtenerChecklist(String(orderId));
+        setChecklist(checklistData);
+    };
+
+    const handleGeneratePDF = async () => {
+        if (!order) return;
+        try {
+            await generateOrderPDF({
+                order,
+                vehicle: vehiculo,
+                checklist,
+                companyInfo: {
+                    name: 'ELECTROMECANICA JR. SPA',
+                    address: 'A INMAR 2290 L IND SEC 2, PUERTO MONTT',
+                    phone: '+56 9 1234 5678'
+                }
+            });
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+        }
+    };
+
     if (authLoading || isLoading) {
         return (
             <div className="flex items-center justify-center py-20">
@@ -334,9 +380,10 @@ export default function OrdenesCleanPage() {
                             <span className="hidden sm:inline">Boleta/Ticket</span>
                         </Button>
                     ) : null}
-                    <Button onClick={handleDownloadPDF} variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl">
+                    <Button onClick={handleGeneratePDF} variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl">
                         <Download className="w-4 h-4 mr-2" />
-                        <span className="hidden sm:inline">PDF</span>
+                        <span className="hidden sm:inline">PDF{checklist ? ' (con Checklist)' : ''}</span>
+                        <span className="sm:hidden">PDF</span>
                     </Button>
                     <Button onClick={handlePrint} variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-700 rounded-xl">
                         <Printer className="w-4 h-4 mr-2" />
@@ -664,6 +711,97 @@ export default function OrdenesCleanPage() {
                     ) : null}
                 </CardContent>
             </Card>
+
+            {/* SECCIÓN CHECKLIST */}
+            <Card className="bg-slate-800/50 border-slate-700/50">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-white">
+                        <ClipboardCheck className="w-5 h-5" />
+                        Lista de Chequeo
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {!checklist ? (
+                        // Sin checklist
+                        <div className="text-center py-8">
+                            <p className="text-slate-400 mb-4">No se ha creado checklist para esta orden</p>
+                            <Button
+                                onClick={() => handleOpenChecklist('checklist')}
+                                className="bg-blue-600 hover:bg-blue-700"
+                            >
+                                <ClipboardCheck className="w-4 h-4 mr-2" />
+                                Crear Checklist Ingreso
+                            </Button>
+                        </div>
+                    ) : !checklist.revisado_por_mecanico_at ? (
+                        // Checklist sin confirmar
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-yellow-500">
+                                <AlertCircle className="w-5 h-5" />
+                                <span className="font-medium">Confirmación Pendiente</span>
+                            </div>
+                            <Button
+                                onClick={() => handleOpenChecklist('readonly_ingreso')}
+                                variant="outline"
+                                className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+                            >
+                                <Eye className="w-4 h-4 mr-2" />
+                                Ver Ingreso para Confirmar
+                            </Button>
+                        </div>
+                    ) : (
+                        // Checklist confirmado
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2 text-green-500">
+                                <CheckCircle2 className="w-5 h-5" />
+                                <span className="font-medium">Ingreso Revisado</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <Button
+                                    onClick={() => handleOpenChecklist('readonly_ingreso')}
+                                    variant="outline"
+                                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                                >
+                                    <Eye className="w-4 h-4 mr-2" />
+                                    Ver Ingreso
+                                </Button>
+                                <Button
+                                    onClick={() => handleOpenChecklist('salida')}
+                                    className="bg-green-600 hover:bg-green-700"
+                                >
+                                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                                    Checklist Salida
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* CHECKLIST DIALOG */}
+            <Dialog open={checklistDialog.open} onOpenChange={(open) => !open && handleChecklistClose()}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-800">
+                    <DialogHeader>
+                        <DialogTitle className="text-slate-100">
+                            {checklistDialog.mode === 'checklist' && 'Crear Checklist de Ingreso'}
+                            {checklistDialog.mode === 'readonly_ingreso' && 'Checklist de Ingreso'}
+                            {checklistDialog.mode === 'salida' && 'Checklist de Salida'}
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-400">
+                            {checklistDialog.mode === 'checklist' && 'Registra el estado del vehículo al momento del ingreso'}
+                            {checklistDialog.mode === 'readonly_ingreso' && 'Revisa y confirma el checklist de ingreso'}
+                            {checklistDialog.mode === 'salida' && 'Registra el estado del vehículo al momento de la entrega'}
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <ChecklistForm
+                        orderId={String(orderId)}
+                        onClose={handleChecklistClose}
+                        initialData={checklist}
+                        mode={checklistDialog.mode}
+                    />
+                </DialogContent>
+            </Dialog>
         </div >
     );
 }
