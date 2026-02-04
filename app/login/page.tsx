@@ -126,15 +126,6 @@ export default function LoginPage() {
                                 'Ingresar'
                             )}
                         </Button>
-
-                        {/* Help Text */}
-                        <div className="text-center space-y-2 mt-6 p-4 bg-slate-900/50 rounded-xl border border-slate-800">
-                            <p className="text-xs text-gray-400 font-semibold mb-2">Credenciales Demo:</p>
-                            <div className="flex flex-col gap-1 text-xs text-gray-500 font-mono">
-                                <p>User: <span className="text-blue-400">admin@taller.demo</span> / Pass: <span className="text-blue-400">1234</span></p>
-                                <p>User: <span className="text-emerald-400">mecanico@taller.demo</span> / Pass: <span className="text-blue-400">1234</span></p>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </div>
