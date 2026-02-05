@@ -23,10 +23,10 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // Si el usuario no escribe @, asumimos el dominio demo
+            // Si el usuario no escribe @, asumimos el dominio de Repair Cars
             let email = username.toLowerCase().trim();
             if (!email.includes('@')) {
-                email = `${email}@taller.demo`;
+                email = `${email}@repaircar.com`;
             }
 
             const result = await login(email, password);
@@ -43,19 +43,25 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col bg-[#121212]">
+        <main className="min-h-screen flex flex-col bg-dark-500">
             <div className="flex-1 flex items-center justify-center p-6">
                 <div className="w-full max-w-sm">
                     {/* Logo */}
                     <div className="text-center mb-10">
-                        <div className="relative w-32 h-32 mx-auto mb-6 rounded-2xl overflow-hidden border-4 border-[#0066FF] shadow-[0_0_30px_rgba(0,102,255,0.3)]">
-                            {/* Removed Image component */}
+                        <div className="relative w-40 h-40 mx-auto mb-6 rounded-2xl overflow-hidden border-4 border-gold-500 shadow-[0_0_30px_rgba(230,184,0,0.3)] bg-gold-500/10">
+                            <Image
+                                src="/images/fondo2.png"
+                                alt="Repair Cars Logo"
+                                fill
+                                className="object-contain p-4"
+                                priority
+                            />
                         </div>
-                        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">
-                            Taller Mecánico
+                        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
+                            Repair Cars
                         </h1>
                         <p className="text-sm text-gray-400">
-                            Sistema de Gestión Integral
+                            Sistema de Gestión Profesional
                         </p>
                     </div>
 
@@ -81,8 +87,8 @@ export default function LoginPage() {
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    placeholder="admin"
-                                    className="h-14 pl-12 bg-[#1a1a1a] border-[#333333] text-white placeholder:text-gray-500 rounded-xl text-base"
+                                    placeholder="joaquin"
+                                    className="h-14 pl-12 bg-dark-400 border-dark-200 text-white placeholder:text-gray-500 rounded-xl text-base focus:border-gold-500"
                                     autoComplete="username"
                                     autoFocus
                                     tabIndex={1}
@@ -103,7 +109,7 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••"
-                                    className="h-14 pl-12 bg-[#1a1a1a] border-[#333333] text-white placeholder:text-gray-500 rounded-xl text-base"
+                                    className="h-14 pl-12 bg-dark-400 border-dark-200 text-white placeholder:text-gray-500 rounded-xl text-base focus:border-gold-500"
                                     autoComplete="current-password"
                                     tabIndex={2}
                                 />
@@ -113,7 +119,7 @@ export default function LoginPage() {
                         {/* Submit Button */}
                         <Button
                             type="submit"
-                            className="w-full h-14 bg-[#0066FF] hover:bg-[#0052CC] text-white text-lg font-semibold rounded-xl shadow-xl shadow-[#0066FF]/25 transition-all duration-200 mt-2 touch-target"
+                            className="w-full h-14 bg-gold-500 hover:bg-gold-600 text-black text-lg font-semibold rounded-xl shadow-xl shadow-gold-500/25 transition-all duration-200 mt-2 touch-target"
                             disabled={isLoading}
                             tabIndex={3}
                         >
@@ -133,7 +139,7 @@ export default function LoginPage() {
             {/* Footer */}
             <div className="py-6 text-center">
                 <p className="text-xs text-gray-600">
-                    © 2024 Gestión Taller • v2.0.0
+                    © 2024 Repair Cars • Sistema Profesional v2.0
                 </p>
             </div>
         </main>

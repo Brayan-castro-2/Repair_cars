@@ -3,47 +3,48 @@
 @tailwind utilities;
 
 /* 
-  Electromecánica JR - Industrial Theme
-  Paleta: Grafito (#121212), Azul Eléctrico (#0066FF), Acentos (#333333)
+  Repair Cars - Professional Automotive Theme
+  Paleta: Negro (#1A1A1A), Dorado (#E6B800), Acentos (#2D2D2D)
 */
 
 @layer base {
   :root {
-    /* Industrial Dark Theme - Grafito oscuro */
-    --background: 0 0% 7.1%;
-    /* #121212 */
-    --foreground: 210 40% 98%;
+    /* Repair Cars Dark Theme - Professional Black */
+    --background: 0 0% 10.2%;
+    /* #1A1A1A */
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 9%;
-    /* #171717 */
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 12%;
+    /* #1F1F1F */
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Azul Eléctrico del Logo JR */
-    --primary: 213 100% 50%;
-    /* #0066FF */
-    --primary-foreground: 0 0% 100%;
+    /* Repair Cars Brand Gold */
+    --primary: 45 100% 45%;
+    /* #E6B800 */
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 14%;
-    /* #242424 */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 18%;
+    /* #2D2D2D */
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 0 0% 14%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 18%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 0 0% 14%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 100% 45%;
+    /* Gold accent */
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Bordes sutiles para inputs */
-    --border: 0 0% 20%;
-    /* #333333 */
-    --input: 0 0% 20%;
-    --ring: 213 100% 50%;
+    /* Borders with subtle gold tint */
+    --border: 0 0% 25%;
+    /* #404040 */
+    --input: 0 0% 25%;
+    --ring: 45 100% 45%;
 
     --radius: 0.75rem;
   }
@@ -58,7 +59,7 @@
     @apply bg-background text-foreground antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #121212;
+    background-color: #1A1A1A;
   }
 
   /* Touch targets generosos - Fat finger friendly */
@@ -83,7 +84,7 @@
   }
 
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background;
+    @apply focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:ring-offset-2 focus:ring-offset-background;
   }
 }
 
@@ -191,35 +192,35 @@
   }
 }
 
-/* Industrial input styles - bordes visibles */
+/* Repair Cars input styles - gold accents */
 input,
 textarea,
 select {
-  border-color: #333333 !important;
+  border-color: #404040 !important;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  @apply ring-2 ring-primary/50 ring-offset-2 ring-offset-background outline-none;
-  border-color: #0066FF !important;
+  @apply ring-2 ring-gold-500/50 ring-offset-2 ring-offset-background outline-none;
+  border-color: #E6B800 !important;
 }
 
-/* Scrollbar industrial */
+/* Scrollbar Repair Cars theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #121212;
+  background: #1A1A1A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: #404040;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #444444;
+  background: #E6B800;
 }

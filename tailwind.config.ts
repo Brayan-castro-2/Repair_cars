@@ -51,6 +51,32 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Repair Cars Brand Colors
+        gold: {
+          50: '#FFFBEB',
+          100: '#FFF3C4',
+          200: '#FFE58F',
+          300: '#FFD666',
+          400: '#FFC53D',
+          500: '#E6B800', // Main brand gold
+          600: '#C9A227',
+          700: '#AD8B19',
+          800: '#8C6E0F',
+          900: '#614D07',
+        },
+        dark: {
+          DEFAULT: '#1A1A1A',
+          50: '#404040',
+          100: '#333333',
+          200: '#2D2D2D',
+          300: '#262626',
+          400: '#1F1F1F',
+          500: '#1A1A1A', // Main brand dark
+          600: '#141414',
+          700: '#0F0F0F',
+          800: '#0A0A0A',
+          900: '#000000',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

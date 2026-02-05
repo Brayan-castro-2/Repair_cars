@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import {
     ClipboardList,
     LayoutDashboard,
@@ -11,15 +12,12 @@ import {
     FileText,
     Calendar
 } from 'lucide-react';
-import { NewBadge } from '@/components/ui/new-badge';
-import { FEATURE_FLAGS } from '@/config/modules';
 
 interface NavItem {
     href: string;
     label: string;
     icon: React.ReactNode;
     roles: ('admin' | 'mecanico')[];
-    showBadge?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -46,7 +44,6 @@ const navItems: NavItem[] = [
         label: 'Agenda',
         icon: <Calendar className="w-5 h-5" />,
         roles: ['admin'],
-        showBadge: true,
     },
     {
         href: '/admin/usuarios',
@@ -59,7 +56,6 @@ const navItems: NavItem[] = [
         label: 'Gestión Clientes',
         icon: <Users className="w-5 h-5" />,
         roles: ['admin'],
-        showBadge: false, // Could be true if we track new customers
     },
 ];
 
@@ -74,7 +70,25 @@ export function Sidebar() {
     return (
         <>
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-[#0a0a0a] border-r border-[#333333] flex-col">
+            <aside className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-dark-800 border-r border-dark-200 flex-col">
+                {/* Logo Section */}
+                <div className="p-6 border-b border-dark-200">
+                    <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-gold-500/30 bg-gold-500/10">
+                            <Image
+                                src="/images/fondo1.jpg"
+                                alt="Repair Cars"
+                                fill
+                                className="object-contain p-1"
+                            />
+                        </div>
+                        <div>
+                            <h2 className="text-white font-bold text-lg">Repair Cars</h2>
+                            <p className="text-xs text-gray-500">Sistema Profesional</p>
+                        </div>
+                    </div>
+                </div>
+
                 <nav className="flex-1 p-4 space-y-1">
                     {filteredItems.map((item) => {
                         const isActive = pathname === item.href ||
@@ -86,10 +100,10 @@ export function Sidebar() {
                                 href={item.href}
                                 prefetch={true}
                                 className={cn(
-                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-colors duration-150",
+                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-150",
                                     isActive
-                                        ? "bg-[#0066FF] text-white shadow-[0_0_15px_rgba(0,102,255,0.4)] border border-[#0066FF]/50"
-                                        : "text-gray-400 hover:bg-[#1a1a1a] hover:text-white"
+                                        ? "bg-gold-500 text-black shadow-[0_0_15px_rgba(230,184,0,0.4)] border border-gold-600 font-semibold"
+                                        : "text-gray-400 hover:bg-dark-400 hover:text-white hover:border-gold-500/20 border border-transparent"
                                 )}
                             >
                                 {item.icon}
@@ -100,17 +114,17 @@ export function Sidebar() {
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-[#333333]">
-                    <div className="px-4 py-3 rounded-xl bg-[#1a1a1a]">
+                <div className="p-4 border-t border-dark-200">
+                    <div className="px-4 py-3 rounded-xl bg-dark-400 border border-dark-200">
                         <p className="text-xs text-gray-500 uppercase tracking-wider">Versión</p>
-                        <p className="text-sm text-gray-300 font-medium">2.0</p>
+                        <p className="text-sm text-gold-500 font-semibold">2.0</p>
                     </div>
                 </div>
             </aside>
 
             {/* Mobile Bottom Navigation - Solo para admin */}
             {user.role === 'admin' && (
-                <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-lg border-t border-[#333333] safe-area-inset-bottom">
+                <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-dark-800/95 backdrop-blur-lg border-t border-dark-200 safe-area-inset-bottom">
                     <div className="flex items-center justify-around py-2 px-2">
                         {filteredItems.map((item) => {
                             const isActive = pathname === item.href ||
@@ -122,9 +136,9 @@ export function Sidebar() {
                                     href={item.href}
                                     prefetch={true}
                                     className={cn(
-                                        "flex flex-col items-center justify-center py-2 px-4 rounded-2xl transition-colors duration-150 min-w-[72px] touch-target",
+                                        "flex flex-col items-center justify-center py-2 px-4 rounded-2xl transition-all duration-150 min-w-[72px] touch-target",
                                         isActive
-                                            ? "bg-[#0066FF] text-white shadow-lg shadow-[#0066FF]/30"
+                                            ? "bg-gold-500 text-black shadow-lg shadow-gold-500/30"
                                             : "text-gray-500 hover:text-gray-300 active:scale-95"
                                     )}
                                 >
