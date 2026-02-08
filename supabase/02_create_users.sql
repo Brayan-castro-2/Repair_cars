@@ -1,0 +1,1 @@
+c:\Users\Administrador\AppData\Local\Packages\MicrosoftWindows.Client.Core_cw5n1h2txyewy\TempState\ScreenClip\{49FDD772-45F7-4B9C-9672-5F4DC37BD96B}.png

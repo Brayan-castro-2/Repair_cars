@@ -67,6 +67,13 @@ export function Sidebar() {
 
     const filteredItems = navItems.filter(item => item.roles.includes(user.role));
 
+    console.log('🔍 Sidebar User:', {
+        email: user.email,
+        role: user.role,
+        roleType: typeof user.role,
+        visibleItems: filteredItems.length
+    });
+
     return (
         <>
             {/* Desktop Sidebar */}

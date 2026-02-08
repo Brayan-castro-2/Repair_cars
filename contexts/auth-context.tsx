@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                         id: result.user.id,
                         email: result.user.email,
                         name: result.perfil.nombre_completo,
-                        role: result.perfil.rol,
+                        role: result.perfil.role,
                         isActive: result.perfil.activo,
                     };
                     setUser(authUser);
@@ -74,8 +74,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Usar el servicio de localStorage
             const result = await loginConCredenciales(email.trim(), password);
 
-            if (result.error || !result.user || !result.perfil) {
-                return { success: false, error: result.error || 'Error de autenticación' };
+            console.log('🔍 Resultado Login Adapter:', result);
+
+            if (result.error) {
+                console.error('❌ Error en result.error:', result.error);
+                return { success: false, error: result.error };
+            }
+
+            if (!result.user) {
+                console.error('❌ Usuario es null');
+                return { success: false, error: 'Usuario no encontrado' };
+            }
+
+            if (!result.perfil) {
+                console.error('❌ Perfil es null. ID Usuario:', result.user?.id);
+                return { success: false, error: 'Perfil no encontrado' };
             }
 
             // Verificar si el usuario está activo
@@ -88,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 id: result.user.id,
                 email: result.user.email,
                 name: result.perfil.nombre_completo,
-                role: result.perfil.rol,
+                role: result.perfil.role,
                 isActive: result.perfil.activo,
             };
 

@@ -9,7 +9,7 @@ export interface PerfilDB {
     id: string;
     email: string;
     nombre_completo: string;
-    rol: 'mecanico' | 'admin';
+    role: 'mecanico' | 'admin';
     activo: boolean;
 }
 
@@ -162,14 +162,14 @@ export function initializeLocalStorage(): void {
             {
                 id: 'admin-juan',
                 nombre_completo: 'Juan',
-                rol: 'admin',
+                role: 'admin',
                 activo: true,
                 email: 'juan@taller.cl',
             },
             {
                 id: 'admin-rodrigo',
                 nombre_completo: 'Rodrigo',
-                rol: 'admin',
+                role: 'admin',
                 activo: true,
                 email: 'rodrigo@taller.cl',
             },
