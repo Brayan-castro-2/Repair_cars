@@ -23,10 +23,17 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // Usar el email/usuario tal como se ingresa
-            const email = username.toLowerCase().trim();
+            const inputEmail = username.toLowerCase().trim();
 
-            const result = await login(email, password);
+            // Intento 1: Usar el input tal como está (puede ser email completo o username)
+            let result = await login(inputEmail, password);
+
+            // Intento 2: Si falla y no tiene @, intentar con @repaircar.com
+            if (!result.success && !inputEmail.includes('@')) {
+                console.log('Primer intento falló, probando con @repaircar.com...');
+                result = await login(`${inputEmail}@repaircar.com`, password);
+            }
+
             if (result.success) {
                 router.push('/');
             } else {
