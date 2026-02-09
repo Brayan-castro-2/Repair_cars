@@ -78,8 +78,8 @@ export function Sidebar() {
         <>
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex fixed left-0 top-16 bottom-0 w-64 bg-dark-800 border-r border-dark-200 flex-col">
-                {/* Logo Section */}
-                <div className="p-6 border-b border-dark-200">
+                {/* Logo Section - Sticky */}
+                <div className="sticky top-0 z-10 p-6 border-b border-dark-200 bg-dark-800">
                     <div className="flex items-center gap-3">
                         <div className="relative w-12 h-12 rounded-lg overflow-hidden border-2 border-gold-500/30 bg-gold-500/10">
                             <Image
@@ -96,7 +96,7 @@ export function Sidebar() {
                     </div>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     {filteredItems.map((item) => {
                         const isActive = pathname === item.href ||
                             (item.href !== '/admin' && item.href !== '/recepcion' && pathname.startsWith(item.href));
