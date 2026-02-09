@@ -1,7 +1,7 @@
 {
-  "name": "Sistema de Gestión de Taller Mecánico",
-  "short_name": "Gestión Taller",
-  "description": "Sistema de gestión de órdenes de trabajo para taller mecánico",
+  "name": "Repair Cars - Sistema de Gestión Profesional",
+  "short_name": "Repair Cars",
+  "description": "Sistema profesional de gestión de órdenes de trabajo para taller mecánico",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",

@@ -23,11 +23,8 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            // Si el usuario no escribe @, asumimos el dominio de Repair Cars
-            let email = username.toLowerCase().trim();
-            if (!email.includes('@')) {
-                email = `${email}@repaircar.com`;
-            }
+            // Usar el email/usuario tal como se ingresa
+            const email = username.toLowerCase().trim();
 
             const result = await login(email, password);
             if (result.success) {

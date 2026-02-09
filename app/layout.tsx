@@ -7,13 +7,13 @@ import { QueryProvider } from '@/contexts/query-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Taller Mecánico - Sistema de Gestión',
-  description: 'Sistema de gestión de órdenes de trabajo para taller mecánico',
-  applicationName: 'Taller App',
+  title: 'Repair Cars - Sistema de Gestión Profesional',
+  description: 'Sistema profesional de gestión de órdenes de trabajo para taller mecánico',
+  applicationName: 'Repair Cars',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Taller App',
+    title: 'Repair Cars',
   },
   formatDetection: {
     telephone: false,
@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Gestión Taller" />
+        <meta name="apple-mobile-web-app-title" content="Repair Cars" />
       </head>
       <body className={`${inter.className} overflow-x-hidden`}>
         <QueryProvider>
